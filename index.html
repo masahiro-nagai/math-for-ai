@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math for AI Playground</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Hands-on Math for AI</p>
+        <h1>数式を「読む」から<br>数式を「動かす」へ。</h1>
+        <p class="hero-text">
+          AIの仕組みを支える数理を、計算の途中式まで追いながら理解するための学習アプリです。
+          本の章立てに合わせて、検索・推薦・画像分類・Transformer・フーリエ解析の核心を
+          小さな実験として触れられるようにしました。
+        </p>
+        <div class="hero-pills">
+          <span>TF-IDF</span>
+          <span>コサイン類似度</span>
+          <span>Softmax</span>
+          <span>Attention</span>
+          <span>DFT</span>
+        </div>
+      </div>
+      <aside class="hero-panel">
+        <h2>このアプリでできること</h2>
+        <ul>
+          <li>式の入力を変えて、結果がどう動くかを見る</li>
+          <li>途中計算を追いながら、理論を視覚的に理解する</li>
+          <li>本の読書メモを残し、自分の言葉で整理する</li>
+        </ul>
+        <p class="panel-note">
+          日本語は簡易トークナイズです。検索系の実験では、単語の間をスペースで区切るとより分かりやすく試せます。
+        </p>
+      </aside>
+    </header>
+
+    <section class="roadmap">
+      <div class="section-heading">
+        <p class="eyebrow">Study Map</p>
+        <h2>本の目次に対応した実験ラボ</h2>
+      </div>
+      <div class="roadmap-grid">
+        <article class="roadmap-card">
+          <span class="chapter-no">Chapter 1</span>
+          <h3>情報検索</h3>
+          <p>TF・IDF・TF-IDFを計算し、検索クエリに対する文書順位を比べます。</p>
+        </article>
+        <article class="roadmap-card">
+          <span class="chapter-no">Chapter 2</span>
+          <h3>商品推薦</h3>
+          <p>評価値ベクトルから類似度を計算し、欠損値予測の考え方を体感します。</p>
+        </article>
+        <article class="roadmap-card">
+          <span class="chapter-no">Chapter 3</span>
+          <h3>画像分類</h3>
+          <p>畳み込み・ReLU・Softmax・交差エントロピーを小さな例で追いかけます。</p>
+        </article>
+        <article class="roadmap-card">
+          <span class="chapter-no">Chapter 4</span>
+          <h3>文章生成</h3>
+          <p>Attentionの重みがどう決まるかを、Q・K・Vの行列計算で確認します。</p>
+        </article>
+        <article class="roadmap-card">
+          <span class="chapter-no">Chapter 5</span>
+          <h3>音声解析</h3>
+          <p>離散信号を周波数へ分解し、どの成分が強いかをスペクトルで観察します。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="lab-shell">
+      <div class="section-heading">
+        <p class="eyebrow">Interactive Labs</p>
+        <h2>式を動かす</h2>
+      </div>
+
+      <div class="tab-bar" role="tablist" aria-label="数学ラボ">
+        <button class="tab is-active" data-tab="search" role="tab" aria-selected="true">検索</button>
+        <button class="tab" data-tab="recommend" role="tab" aria-selected="false">推薦</button>
+        <button class="tab" data-tab="vision" role="tab" aria-selected="false">画像分類</button>
+        <button class="tab" data-tab="attention" role="tab" aria-selected="false">Transformer</button>
+        <button class="tab" data-tab="signal" role="tab" aria-selected="false">フーリエ</button>
+      </div>
+
+      <div class="lab-panels">
+        <section class="lab-panel is-active" id="tab-search">
+          <div class="lab-grid">
+            <div class="card">
+              <h3>TF-IDF ラボ</h3>
+              <p class="card-copy">文書集合とクエリから TF, DF, IDF, スコアを計算します。</p>
+              <label for="search-query">検索クエリ</label>
+              <input id="search-query" type="text" value="ai search ranking">
+
+              <label for="search-docs">文書集合（1行1文書）</label>
+              <textarea id="search-docs" rows="8">search engine ranking with tf idf
+ai model for image classification
+search ranking uses vector space model
+recommendation model with cosine similarity</textarea>
+            </div>
+
+            <div class="card">
+              <h3>計算結果</h3>
+              <div class="formula-chip">TF-IDF(d, q) = Σ tf(t, d) × idf(t)</div>
+              <div id="search-summary" class="metric-grid"></div>
+              <div id="search-terms" class="table-wrap"></div>
+              <div id="search-ranking" class="table-wrap"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="lab-panel" id="tab-recommend">
+          <div class="lab-grid">
+            <div class="card">
+              <h3>協調フィルタリング ラボ</h3>
+              <p class="card-copy">ターゲットユーザーと近い嗜好を持つ人を探し、未評価アイテムを予測します。</p>
+              <label for="recommend-target">ターゲット評価（欠損は ?）</label>
+              <input id="recommend-target" type="text" value="5, 4, ?, 2, 1">
+
+              <label for="recommend-peers">他ユーザーの評価（名前: 値,値,値...）</label>
+              <textarea id="recommend-peers" rows="7">A: 5, 5, 4, 2, 1
+B: 4, 4, 5, 1, 1
+C: 1, 2, 1, 5, 5
+D: 5, 4, 4, 2, 2</textarea>
+
+              <label class="check-row">
+                <input id="recommend-centered" type="checkbox" checked>
+                中心化コサイン類似度を使う
+              </label>
+            </div>
+
+            <div class="card">
+              <h3>計算結果</h3>
+              <div class="formula-chip">similarity(u, v) = (u · v) / (||u|| ||v||)</div>
+              <div id="recommend-summary" class="metric-grid"></div>
+              <div id="recommend-similarities" class="table-wrap"></div>
+              <div id="recommend-explain" class="explain-box"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="lab-panel" id="tab-vision">
+          <div class="lab-grid">
+            <div class="card">
+              <h3>CNN と Softmax ラボ</h3>
+              <p class="card-copy">小さな画像行列とカーネルを使って、畳み込みと確率的予測を追います。</p>
+              <label for="vision-image">画像行列</label>
+              <textarea id="vision-image" rows="6">1 2 0 1
+0 1 3 1
+2 1 0 0
+1 0 1 2</textarea>
+
+              <label for="vision-kernel">カーネル</label>
+              <textarea id="vision-kernel" rows="4">1 0
+0 -1</textarea>
+
+              <label for="vision-logits">クラス logits</label>
+              <input id="vision-logits" type="text" value="2.1, 0.5, -1.2">
+
+              <label for="vision-target">正解クラス index</label>
+              <input id="vision-target" type="number" min="0" value="0">
+            </div>
+
+            <div class="card">
+              <h3>計算結果</h3>
+              <div class="formula-chip">softmax(zᵢ) = exp(zᵢ) / Σ exp(zⱼ)</div>
+              <div id="vision-summary" class="metric-grid"></div>
+              <div id="vision-conv" class="table-wrap"></div>
+              <div id="vision-softmax" class="table-wrap"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="lab-panel" id="tab-attention">
+          <div class="lab-grid">
+            <div class="card">
+              <h3>Attention ラボ</h3>
+              <p class="card-copy">1つのトークンが、どのトークンをどれだけ参照するかを数値で見ます。</p>
+              <label for="attention-q">Q 行列</label>
+              <textarea id="attention-q" rows="5">1 0
+0 1
+1 1</textarea>
+
+              <label for="attention-k">K 行列</label>
+              <textarea id="attention-k" rows="5">1 1
+1 0
+0 1</textarea>
+
+              <label for="attention-v">V 行列</label>
+              <textarea id="attention-v" rows="5">1 0
+0 2
+2 1</textarea>
+
+              <label for="attention-focus">注目するトークン index</label>
+              <input id="attention-focus" type="number" min="0" value="0">
+            </div>
+
+            <div class="card">
+              <h3>計算結果</h3>
+              <div class="formula-chip">Attention(Q, K, V) = softmax(QKᵀ / √dₖ)V</div>
+              <div id="attention-summary" class="metric-grid"></div>
+              <div id="attention-scores" class="table-wrap"></div>
+              <div id="attention-context" class="explain-box"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="lab-panel" id="tab-signal">
+          <div class="lab-grid">
+            <div class="card">
+              <h3>離散フーリエ変換 ラボ</h3>
+              <p class="card-copy">時間領域の信号を周波数領域へ写し替え、支配的な周波数を探します。</p>
+              <label for="signal-values">信号値</label>
+              <input id="signal-values" type="text" value="0, 1, 0, -1, 0, 1, 0, -1">
+
+              <div class="preset-row">
+                <button class="preset-btn" data-signal="sine">正弦波</button>
+                <button class="preset-btn" data-signal="mix">混合波</button>
+                <button class="preset-btn" data-signal="pulse">パルス</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>計算結果</h3>
+              <div class="formula-chip">X(k) = Σ x(n) e<sup>-i2πkn/N</sup></div>
+              <div id="signal-summary" class="metric-grid"></div>
+              <div id="signal-spectrum" class="chart-wrap"></div>
+              <div id="signal-explain" class="table-wrap"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="study-tools">
+      <div class="section-heading">
+        <p class="eyebrow">Thinking Support</p>
+        <h2>理解を深める補助</h2>
+      </div>
+
+      <div class="study-grid">
+        <article class="card prompt-card">
+          <h3>観察のポイント</h3>
+          <div id="prompt-box" class="prompt-box"></div>
+        </article>
+
+        <article class="card notes-card">
+          <h3>読書メモ</h3>
+          <p class="card-copy">章ごとの気づきや、式の意味を自分の言葉で残しておくと定着しやすくなります。</p>
+          <textarea id="study-notes" rows="10" placeholder="例: IDF は『珍しさへのボーナス』として読むと直感的だった。"></textarea>
+          <div class="notes-footer">
+            <span id="save-status">ローカル保存中</span>
+            <button id="clear-notes" class="secondary-btn">メモを消去</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
