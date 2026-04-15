@@ -14,6 +14,16 @@ AIの仕組みを支える数学を、手を動かしながら理解するため
 
 `index.html` をブラウザで開くだけで動きます。ビルドは不要です。
 
+## GitHub Pages
+
+このリポジトリは `main` ブランチへの push をきっかけに GitHub Pages へ自動デプロイされます。
+
+- 公開 URL: `https://masahiro-nagai.github.io/math-for-ai/`
+- 反映タイミング: `main` に push してから数十秒から数分
+- デプロイ設定: `.github/workflows/deploy-pages.yml`
+
+初回だけ GitHub 側で Pages のデプロイ準備に少し時間がかかることがあります。
+
 ## ねらい
 
 書籍を読み進めるときに、
